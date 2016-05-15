@@ -1,0 +1,142 @@
+               3: 3 
+               Attributes: sem=3 head=3
+            Num: 3 
+            Attributes: sem=3 head=3
+         FACTOR: 3 
+         Attributes: sem=3
+      TERM: 3 
+      Attributes: sem=3
+   EXPR: 3 
+   Attributes: sem=3
+ROOT: 3 
+Attributes: sem=3
+---
+failure: failure 
+Attributes: head=failure sem=failure
+---
+                  3: 3 
+                  Attributes: sem=3 head=3
+               Num: 3 
+               Attributes: sem=3 head=3
+            FACTOR: 3 
+            Attributes: sem=3
+         TERM: 3 
+         Attributes: sem=3
+         *: * 
+         Attributes: head=* sem=*
+               5: 5 
+               Attributes: sem=5 head=5
+            Num: 5 
+            Attributes: sem=5 head=5
+         FACTOR: 5 
+         Attributes: sem=5
+      TERM: 3 * 5 
+      Attributes: sem=3*5
+   EXPR: 3 * 5 
+   Attributes: sem=3*5
+ROOT: 3 * 5 
+Attributes: sem=3*5
+---
+                        3: 3 
+                        Attributes: head=3 sem=3
+                     Num: 3 
+                     Attributes: sem=3 head=3
+                  FACTOR: 3 
+                  Attributes: sem=3
+               TERM: 3 
+               Attributes: sem=3
+               *: * 
+               Attributes: sem=* head=*
+                     5: 5 
+                     Attributes: sem=5 head=5
+                  Num: 5 
+                  Attributes: head=5 sem=5
+               FACTOR: 5 
+               Attributes: sem=5
+            TERM: 3 * 5 
+            Attributes: sem=3*5
+         EXPR: 3 * 5 
+         Attributes: sem=3*5
+         +: + 
+         Attributes: sem=+ head=+
+                     6: 6 
+                     Attributes: head=6 sem=6
+                  Num: 6 
+                  Attributes: sem=6 head=6
+               FACTOR: 6 
+               Attributes: sem=6
+            TERM: 6 
+            Attributes: sem=6
+            *: * 
+            Attributes: sem=* head=*
+               {: { 
+               Attributes:
+                                 5: 5 
+                                 Attributes: sem=5 head=5
+                              Num: 5 
+                              Attributes: head=5 sem=5
+                           FACTOR: 5 
+                           Attributes: sem=5
+                        TERM: 5 
+                        Attributes: sem=5
+                     EXPR: 5 
+                     Attributes: sem=5
+                     -: - 
+                     Attributes: sem=- head=-
+                              3: 3 
+                              Attributes: sem=3 head=3
+                           Num: 3 
+                           Attributes: head=3 sem=3
+                        FACTOR: 3 
+                        Attributes: sem=3
+                     TERM: 3 
+                     Attributes: sem=3
+                  EXPR: 5 - 3 
+                  Attributes: sem=5 - 3
+                  -: - 
+                  Attributes: sem=- head=-
+                           2: 2 
+                           Attributes: head=2 sem=2
+                        Num: 2 
+                        Attributes: sem=2 head=2
+                     FACTOR: 2 
+                     Attributes: sem=2
+                  TERM: 2 
+                  Attributes: sem=2
+               EXPR: 5 - 3 - 2 
+               Attributes: sem=(5 - 3) - 2
+               }: } 
+               Attributes:
+            FACTOR: { 5 - 3 - 2 } 
+            Attributes: sem=(5 - 3) - 2
+         TERM: 6 * { 5 - 3 - 2 } 
+         Attributes: sem=6*((5 - 3) - 2)
+      EXPR: 3 * 5 + 6 * { 5 - 3 - 2 } 
+      Attributes: sem=(3*5) + (6*((5 - 3) - 2))
+      +: + 
+      Attributes: head=+ sem=+
+            sqrt: sqrt 
+            Attributes: sem=sqrt head=sqrt
+            {: { 
+            Attributes:
+                        7: 7 
+                        Attributes: sem=7 head=7
+                     Num: 7 
+                     Attributes: sem=7 head=7
+                  FACTOR: 7 
+                  Attributes: sem=7
+               TERM: 7 
+               Attributes: sem=7
+            EXPR: 7 
+            Attributes: sem=7
+            }: } 
+            Attributes:
+         FACTOR: sqrt { 7 } 
+         Attributes: sem=\/7
+      TERM: sqrt { 7 } 
+      Attributes: sem=\/7
+   EXPR: 3 * 5 + 6 * { 5 - 3 - 2 } + sqrt { 7 } 
+   Attributes: sem=((3*5) + (6*((5 - 3) - 2))) + (\/7)
+ROOT: 3 * 5 + 6 * { 5 - 3 - 2 } + sqrt { 7 } 
+Attributes: sem=((3*5) + (6*((5 - 3) - 2))) + (\/7)
+---

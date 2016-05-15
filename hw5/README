@@ -1,0 +1,140 @@
+600.465 Assignment 5
+Jinyi Guo
+
+3 
+	(a)	i. f = %x loves(Mary, x)
+		ii. loves(Mary)
+
+	(b)	VP -> V NP
+	(c)	i. f = %x A%y woman(y) => loves(y, x)
+		ii. f: loves every woman.
+			f(John): John loves every woman.
+
+	(d)	f is (%f %x Obviously(f(x)))
+		(%f %x Obviously(f(x)))(%x loves(Mary, x))(Sue)
+
+	(e)	(%x %y %e act(e, loving) ^ lovee(e, x) ^ lover(e, y))
+
+
+	(f)	f(Mary): %y %e act(e, loving) ^ lovee(e, Mary) ^ lover(e, y)
+		g is (%f %y %e f(y, e) ^ manner(e, passionate)) //(%y %e act(e, loving) ^ lovee(e, Mary) ^ lover(e, y))(John)
+
+	(g)	i. (%g A%y woman(y) => g(y))
+		ii.	f(%x loves(Mary, x)):	Every woman loves Mary
+			(%x loves(Mary, x)):	Loves Mary
+			f:	Every woman
+
+	(h)	i.	(%x %z A%y x(y) => z(y))
+		ii.	Every
+
+	(i)	i.	(%f f(Papa))
+		ii.	Because this makes it possible to treat all kinds of NP in a consistent manner.
+
+4
+	"him love -s she ." 
+	This sentence is ungrammatical but the system still gives a possible semantics instead of print error message.
+
+
+	"Papa sleep -s every bonbon with a spoon ."
+	The system failed to assign attributes to this sentence, maybe the following parse is can be used:
+	(ROOT (S (NP Papa)
+			 (VP (VP (V (V sleep)
+			 			 -s)
+			 		 (NP (Det every)
+			 		 	 (N (N bonbon))))
+			 	 (PP (P with)
+			 	 	 (NP (Det a)
+			 	 	 	 (N spoon)))))
+			.)
+	But this may not work neither, because the verb "sleep" is intransitive and takes no argument. Only if we add some semantic rules that treat "sleep" as a transitive verb can we manage to assign attribute to this sentence.
+ 
+	"Papa eat -ed every bonbon with a spoon ."
+	The PP "with a spoon" was assigned to "bonbon" rather than "Papa". The following parse may help:
+	(ROOT (S (NP Papa)
+			 (VP (VP (V (V eat)
+			 			 -ed)
+			 		 (NP (Det every)
+			 		 	 (N (N bonbon))))
+			 	 (PP (P with)
+			 	 	 (NP (Det a)
+			 	 	 	 (N spoon)))))
+			.)
+
+	"Laura say -s that George might sleep on the floor !"
+	The PP "on the floor" is assigned to "might" rather than "sleep". This is also caused by wrong parse of PP. Here is an possible alternative:
+	(ROOT (S (NP Laura)
+	         (VP (V (V say)
+	                -s)
+	             (SBAR that
+	                   (S (NP George)
+	                      (VP (VP (Modal might)
+	                              (VP (V sleep)))
+		                          (PP (P on)
+		                              (NP (Det the)
+		                                  (N floor))))))))
+	      !)
+
+
+	"every sandwich was go -ing to have been delicious . " The tense of this sentence is ambiguous, so it does not make sense even if it is grammatical.
+
+
+	"the fine and blue woman and every man must have eat -ed two sandwich -s and sleep -ed on the floor ."
+	The system didn't give a semantic representation for this sentence, the following parse may help:
+	(ROOT (S (NP (NP (Det the)
+                 (N (Adj (Adj fine)
+                         and
+                         (Adj blue))
+                    (N woman)))
+             and
+             (NP (Det every)
+                 (N man)))
+         (VP (VP (Modal must)
+                 (VP (V have)
+                     (VP (V (V eat)
+                            -ed)
+                         (NP (Det two)
+                             (N (N sandwich)
+                                -s)))))
+             and
+             (VP (VP (V (V sleep)
+                        -ed))
+		                 (PP (P on)
+		                     (NP (Det the)
+		                         (N floor))))))
+      .)
+
+
+
+5
+	The basic way to do this is to add rules for all V and Det that may attach a mass noun, this solution is in file "english2.gra". The test file contains both sentences where the mass noun is subject (e.g. all caviar was go -ing to have been delicious .) and those where the mass noun is object (e.g. Papa eat -ed all caviar with a spoon . )
+
+	For sentences whose constituents are consistent grammartically, ./parseattrs should be able to give a correct semantic representation. For example, sentence "all caviar on the spoon entice -s ." has the following representation:
+		head=entice sem=Assert(Speaker, Pres(entice(SOMETHING,all(%x caviar(x) ^ on(the(spoon),x)))))  
+
+	For ungrammatical sentences, ./parseattrs is able to detect the inconsistency and print out the error message. e. g. the sentence "every caviar are delicious ." is ungrammatical and was given "No consistent way to assign attributes!" by ./parseattrs.
+
+	For more "elegant" method, I added the following "upper-level" rules to handle mass noun by reuse the rules of "V" for singular noun and plural noun:
+		1 S[=2 sem=2(1)]        NP[num=mass] VP[num=sing tense=modal] 
+		1 S[=2 sem=Pres(2(1))]  NP[num=mass] VP[num=sing tense=pres]
+		1 S[=2 sem=Past(2(1))]  NP[num=mass] VP[num=sing tense=past]  
+
+		1 N[=1 num=mass] caviar
+
+	Since the rules for Det cannot be resused, we still have to add them one by one as the previous method.
+	This solution is in file "english3.gra".
+
+
+6
+	(a) 1 Det[=1 num=pl sem="%dom %pred E%first E%second [first!=second ^ dom(first)^dom(second)] ^ pred(first) ^ pred(second)"] two 
+	These attribute mean that there exist two objects that are both in the domain (the noun follows the determiner) and the predicate is true for both of them, plus they are not identical.
+
+	1 Det[=1 num=sing sem="%dom %pred E%t [dom(t) ^ !E%u u!=t ^ dom(u)] ^ pred(t)"] the
+	This means that there is an object that satisfies the predicate and is in the domain, and there does not exist another object that is not equal to this object but in the same domain.
+
+	1 Det[=1 num=pl sem="%dom %pred E%T [exhaustive(T,dom)] ^ pred(T)"] the    
+	This means there exists a set of objects that satisfies the predicate and all objects in the sets are in the domain.
+
+	sem=Assert(Speaker, Past(want(George(%subk E%b [pickle(b)] ^ eat(b,subk)), Papa)))
+
+
+
